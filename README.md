@@ -1,6 +1,9 @@
 # reitnorF-timer-2.0
 reitnorF timer, rewritten in rust, because why not...
 
+[Download here](https://github.com/altilunium/reitnorF-timer-2.0/releases/download/v2.0/rtimer.exe) (Windows 64 bit)
+
+
 ![](https://pbs.twimg.com/media/Fe1_I8xVsAAJp9u?format=jpg&name=small)
 
 ### Demo
