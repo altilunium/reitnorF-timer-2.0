@@ -5,14 +5,17 @@ use chrono;
 use std::sync::mpsc::{self, TryRecvError};
 use cli_clipboard::{ClipboardContext, ClipboardProvider};
 
+fn main() {
 
 
-
-fn main(){
-
-println!("reitnorF Timer 2.0");
     let date = chrono::Local::now().format("%-d %B %Y").to_string();
     let start_time = chrono::Local::now().format("%-H:%M").to_string();
+    println!("reitnorF timer 2.0");
+    println!("{}, {}", date,start_time);
+    println!("");
+
+
+
     let (tx, rx) = mpsc::channel();
     let (txa, rxa) = mpsc::channel();
     let mut i = 1;
@@ -21,35 +24,25 @@ println!("reitnorF Timer 2.0");
     
     thread::spawn(move || {
         
-        let ctn:bool = true;
-        
-        while ctn {
-            
+        loop {
+            //Update current elapsed time
             let term = console::Term::stdout();
-            term.clear_screen().expect("failed clearing screen");
-            println!("reitnorF timer 2.0");
-            //println!("{:?}", chrono::offset::Local::now());
-
-            let now = chrono::Local::now();
-            println!("{}", now.format("%-d %B %Y, %-H:%M").to_string());
-
-            println!("{} hour, {} minute, {} second ",h,m,i);
+            term.clear_last_lines(1).expect("");
+            let stamp = format!("{} hour, {} minute, {} second ",h,m,i);
+            term.write_line(&stamp).expect("");
            
+            //Second to hour-minute-second conversion
             thread::sleep(Duration::from_millis(1000));
             i = i + 1;
-            if i == 60 {
-                i = 0;
-                m = m +1;
-            }
-            if m == 60{
-                m = 0;  
-                h = h +1;
-            }
+            if i == 60 {i = 0;m = m +1;}
+            if m == 60{m = 0;h = h +1;}
 
+            //Wait for quit signal from main thread
             match rx.try_recv() {
             Ok(_) | Err(TryRecvError::Disconnected) => {
                 println!("Timer terminated.");
                 let ticker_dur = format!("({} hour {} minute {} second)",h,m,i);
+                // Send back the time data to main thread
                 txa.send(ticker_dur).unwrap();
                 break;
             }
@@ -58,32 +51,29 @@ println!("reitnorF Timer 2.0");
         }
     });
     
-    let end_time = chrono::Local::now().format("%-H:%M").to_string();
-    
-    //let start = Instant::now();
 
+    //Wait for quit signal from user
     io::stdin().read_line(&mut String::new()).unwrap();
-    //let duration = start.elapsed();
-
+    
+    //Send quit signal to timer thread
     let _ = tx.send(());
+
+    //Receive elapsed time data
     let received = rxa.recv().unwrap();
 
+    //Get end time
+    let end_time = chrono::Local::now().format("%-H:%M").to_string();
+
+    //Generate report
     let ticker = format!("[{}] {} - {} {}", date,start_time, end_time,received);
 
-
+    //Show report
     println!("{}",ticker);
-    //println!("{:?}", duration);
 
+    //Copy report to clipboard
     let mut ctx = ClipboardContext::new().unwrap();
     ctx.set_contents(ticker.to_owned()).unwrap();
     io::stdin().read_line(&mut String::new()).unwrap();
-
-
-    /*
-    let mut user_input = String::new();
-    let stdin = io::stdin(); // We get `Stdin` here.
-    stdin.read_line(&mut user_input);
-    */
 
     
 
