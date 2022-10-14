@@ -11,9 +11,11 @@ reitnorF timer, rewritten in rust, because why not...
 
 ### Benchmark against Python-based [reitnorF-timer 1.0](https://github.com/altilunium/reitnorF-timer)
 Lower CPU & RAM usage
+
 ![Taskmgr_bcsfhyYrrv](https://user-images.githubusercontent.com/70379302/195884125-dbb2fe7f-3686-4958-acaf-404bafa14688.gif)
 
 Smaller executable file
+
 ![image](https://user-images.githubusercontent.com/70379302/195884325-aeaee8ef-2628-48ce-a8e0-6c7b00233d2c.png)
 
 
