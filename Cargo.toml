@@ -9,3 +9,6 @@ edition = "2021"
 console = "0.15.2"
 chrono = "0.4"
 cli-clipboard = "0.3.0"
+
+[build-dependencies]
+winres = "0.1"
